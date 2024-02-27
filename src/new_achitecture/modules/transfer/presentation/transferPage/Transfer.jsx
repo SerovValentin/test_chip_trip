@@ -9,12 +9,12 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import "./Transfer.css";
-import i18n from "../../../../trip_search/domain/entites/utils/language/i18n";
+import i18n from "../../../trip_search/domain/entites/utils/language/i18n";
 import { useSelector } from "react-redux";
-import { currencies } from "../CurrenciesSelector/currencies";
+import { currencies } from "@modules/transfer/presentation/currenciesSelector/currencies";
 import { Tooltip } from "@material-ui/core";
 import cities from "../../../../../general/utils/jsons/cities.json";
-import { timeZones } from "../CarrierPage/timezones/timezones";
+import { timeZones } from "@modules/transfer/presentation/carrierPage/timezones/timezones";
 
 export default function Transfer({ transfer }) {
   const globalCurrencyCode = useSelector((state) => state.app.currency);
@@ -30,15 +30,15 @@ export default function Transfer({ transfer }) {
   const transferCurrency =
     currencies.find((cur) => cur.code === transfer.currency) || currencies.find((cur) => cur.code === "EUR");
 
-  // console.log("depTime = ", transfer.departureTime);
-  // console.log("transfer.timeZone = ", transfer.timeZone);
-  //const timeZoneName = timeZones.find(tz => tz.shift === transfer.timeZone)?.name
+  // console.log("depTime = ", transferPage.departureTime);
+  // console.log("transferPage.timeZone = ", transferPage.timeZone);
+  //const timeZoneName = timeZones.find(tz => tz.shift === transferPage.timeZone)?.name
   const timeZoneName = "GMT+" + transfer.timeZone + " " + i18n.t("timezone." + transfer.timeZone);
 
   const departureTimeSplit = transfer.departureTime.split(":");
 
   if (currencies.map((cur) => cur.code).includes(transfer.currency)) {
-    // IF transfer.currency IS IN THE currencies ARRAY
+    // IF transferPage.currency IS IN THE currencies ARRAY
 
     if (transfer.currency === globalCurrencyCode) {
       // NO NEED TO RECALCULATE IF CURRENCIES ARE EQUAL
@@ -51,7 +51,7 @@ export default function Transfer({ transfer }) {
         ) / 100;
     }
   } else {
-    // IF transfer.currency IS not IN THE currencies ARRAY, ASSUME IT IS EURO
+    // IF transferPage.currency IS not IN THE currencies ARRAY, ASSUME IT IS EURO
     if (globalCurrencyCode === "EUR") {
       priceNum = transfer.price;
     } else {
@@ -65,7 +65,7 @@ export default function Transfer({ transfer }) {
     priceToDisplay = priceNum + " " + globalCurrency.r2rSymbol;
   }
 
-  // console.log("transfer.regularTripsDays: ", transfer.regularTripsDays);
+  // console.log("transferPage.regularTripsDays: ", transferPage.regularTripsDays);
 
   // add new variables - dispatchTime arrivalTime
   return (
@@ -134,7 +134,7 @@ export default function Transfer({ transfer }) {
             {!transfer.regularTrips && (
               <Grid container item xs={12} alignItems="center" justifyContent="flex-start">
                 <Paper className={"paper"}>
-                  {i18n.t("Date of travel")}: {/*{transfer.date.replace("T", "  ")}*/}
+                  {i18n.t("Date of travel")}: {/*{transferPage.date.replace("T", "  ")}*/}
                   {transfer.date.slice(0, 10)}
                 </Paper>
               </Grid>
@@ -154,7 +154,7 @@ export default function Transfer({ transfer }) {
                       {Object.keys(transfer.regularTripsDays)
                         .sort()
                         .map((weekDay) => {
-                          // console.log("weekDay: ", weekDay, transfer.regularTripsDays[weekDay]);
+                          // console.log("weekDay: ", weekDay, transferPage.regularTripsDays[weekDay]);
                           const departTime = transfer.regularTripsDays[weekDay].departureTime;
                           return transfer.regularTripsDays[weekDay].selected ? (
                             <>
@@ -162,9 +162,9 @@ export default function Transfer({ transfer }) {
                                 <Grid xs={7}>{i18n.t(weekDay)} </Grid>
                                 <Grid xs={3}>{departTime ? departTime : "-- : --"}</Grid>
                               </Grid>
-                              {/*<WeekDayIcon*/}
+                              {/*<weekDayIcon*/}
                               {/*  name={weekDay}*/}
-                              {/*  value={transfer.regularTripsDays[weekDay]}*/}
+                              {/*  value={transferPage.regularTripsDays[weekDay]}*/}
                               {/*/>*/}
                             </>
                           ) : null;
@@ -178,7 +178,7 @@ export default function Transfer({ transfer }) {
             {transfer.duration && (
               <Grid container item xs={12} alignItems="center" justifyContent="flex-start">
                 <Paper className={"paper"}>
-                  {i18n.t("Duration of ride")}: {/*{transfer.date.replace("T", "  ")}*/}
+                  {i18n.t("Duration of ride")}: {/*{transferPage.date.replace("T", "  ")}*/}
                   {transfer.duration}
                 </Paper>
               </Grid>
@@ -191,7 +191,7 @@ export default function Transfer({ transfer }) {
             </Grid>
             <Grid container item xs={12} justifyContent="flex-start" alignItems="center">
               {/* <Paper className={"paper"}>
-                {i18n.t("Places")}: {transfer.places}
+                {i18n.t("Places")}: {transferPage.places}
                 <AirlineSeatReclineNormalIcon fontSize="small"/>
               </Paper> */}
 
@@ -237,8 +237,8 @@ export default function Transfer({ transfer }) {
               <IconButton onClick={() =>
                 history.push(
                   {
-                    pathname: '/transfer',
-                    transfer: transfer,
+                    pathname: '/transferPage',
+                    transferPage: transferPage,
                   }
                 )
               }>

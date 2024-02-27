@@ -43,7 +43,7 @@ export const useStyles = makeStyles(theme => ({
     paddingBottom: "80px"
   },
 
-  // !! MainPage
+  // !! mainPage
 
   mainPage: {
     minHeight: "100vh",
@@ -208,7 +208,7 @@ export const theme = createTheme({
 //     paddingBottom: "80px"
 //   },
 
-//   // !! MainPage
+//   // !! mainPage
 
 //   mainPage: {
 //     minHeight: "100vh",

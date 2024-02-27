@@ -1,6 +1,6 @@
 import React from "react";
 import "./TransfersList.css";
-import Transfer from "../Transfer/Transfer";
+import Transfer from "../Transfer";
 
 export default function TransfersList({ transfers }) {
     // console.log("transfers: ", transfers);

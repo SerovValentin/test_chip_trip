@@ -1,21 +1,19 @@
+import { useDispatch, useSelector } from "react-redux";
+import yup from "yup";
+import classes from "./CarrierComponent.module.css";
 import { useEffect, useState } from "react";
-import * as yup from "yup";
 import { Formik } from "formik";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-// import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-// import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import styles from "./CarrierPage.module.css";
-import { uploadTransfer } from "../../../../trip_search/data/api/data-service";
-import { useHistory } from "react-router-dom";
+// import cities_json from "../../../../../../general/utils/jsons/cities.json";
+import cities_json from "@general/utils/jsons/cities.json";
+// import i18n from "../../../../../../general/utils/language/i18n";
+import i18n from "@modules/trip_search/domain/entites/utils/language/i18n";
+import TextField from "@material-ui/core/TextField";
 import {
   Checkbox,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   FormControl,
   FormControlLabel,
   Grid,
@@ -25,41 +23,58 @@ import {
   Select,
   Tooltip,
 } from "@material-ui/core";
-import cities_json from "../../../../../general/utils/jsons/cities.json";
-import i18n from "../../../../trip_search/domain/entites/utils/language/i18n";
-import { useSelector } from "react-redux";
-import { currencies } from "../CurrenciesSelector/currencies";
+import { getLoading } from "../../../../trip_search/presentation/redux/reducers/selectors";
 import axios from "axios";
-import "yup-phone-lite";
-import { useStyles } from "../../../../../general/MUI/useStyles";
-import { timeZones } from "./timezones/timezones";
-import { getLoading } from "../../../../../general/redux/selectors";
-import { useDispatch } from "react-redux";
+import { loadingUploadTransferAction } from "@modules/trip_search/presentation/redux/actions/loading-actions";
+import { uploadTransfer } from "../../../../trip_search/data/api/data-service";
+import { timeZones } from "../timezones/timezones";
+import { currencies } from "@modules/transfer/presentation/currenciesSelector/currencies";
+import Button from "@material-ui/core/Button";
 import { LoadingButton } from "@mui/lab";
 import { Alert } from "@mui/material";
-import { loadingUploadTransferAction } from "@modules/trip_search/presentation/redux/actions/loading-actions";
+
+const trip = {
+  timestamp: new Date(),
+  date: new Date(),
+  isRegular: false,
+  trip: [{ departureTime: "", arrivalTime: "" }],
+  costOfTravel: {
+    price: "",
+    priceForCargo: "",
+    currency: "EUR",
+  },
+  carrier: {
+    name: "",
+    phone: "",
+    email: "",
+    site: "",
+  },
+  cargo: {
+    isPassParcel: false,
+    isPetsAllowed: false,
+  },
+  additionalInfo: "",
+};
 
 const schema = yup.object().shape({
   from: yup.string().required("from.Required"),
   to: yup.string().required("to.Required"),
-  date: yup.date().required("date.Required"), //!!! date, departureTime, and duration are conditionally reassigned later;
+  date: yup.date().required("date.Required"),
   departureTime: yup.string().required("departureTime.Required"),
-  // duration: yup.string().required("duration.Required"),
   places: yup
     .number()
     .min(1, "Available places must be more or equal to 1")
     .max(8, "Available places must be less or equal to 8")
     .required("places.Required"),
   phoneNumber: yup.string().required("phoneNumber.Required").phone(undefined, "phoneNumber.isNotValid"),
-  price: yup.number().positive("price.OnlyPositive"),
+  price: yup.string().required("price.Required"),
 });
 
-export default function CarrierPage() {
+export default function CarrierComponent() {
   const dispatch = useDispatch();
   const cur = useSelector((state) => state.app.currency);
   const lang = useSelector((state) => state.app.lang);
   const loading = useSelector(getLoading).isLoadingNewTransfer;
-  const classes = useStyles();
   const [rideCurrency, setRideCurrency] = useState(cur);
   // const [messenger, setMessenger] = useState();
   // const [nearestCity, setNearestCity] = useState();
@@ -124,7 +139,6 @@ export default function CarrierPage() {
     setOpen(false);
   };
 
-  const history = useHistory();
   const defaultProps = {
     options: cities,
     getOptionLabel: (option) => {
@@ -135,67 +149,7 @@ export default function CarrierPage() {
 
   const getCity = (lat, long) => {
     const URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${long}&accept-language=en`;
-    axios.get(URL).then((response) => console.log("getCity CarrierPAge", response.data));
-  };
-
-  // !! Compute Distance Between current city and nearest City in AutoComplete "From".
-  const getDefaultCity = () => {
-    cities_json.forEach((element) => {
-      // debugger;
-      let absLat = Math.round(latitude);
-      let elementAbsLat = Math.round(element.latitude);
-      let absLng = Math.round(longitude);
-      let elementAbsLng = Math.round(element.longitude);
-      if (absLat === elementAbsLat && absLng === elementAbsLng) {
-        console.log("est");
-      } else {
-        const getDistance = (cityLat, cityLng) => {
-          const R = 6371e3;
-          const φ1 = (latitude * Math.PI) / 180; // φ, λ in radians
-          const φ2 = (cityLat * Math.PI) / 180;
-          const Δφ = ((cityLat - latitude) * Math.PI) / 180;
-          const Δλ = ((cityLng - longitude) * Math.PI) / 180;
-          const a =
-            Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-          const d = R * c; // in metres
-          return d;
-        };
-        const getNearestCity = (arr) => {
-          let lowest = {};
-          let temp;
-          arr.forEach((element) => {
-            if (Object.keys(lowest).length === 0 && lowest.constructor === Object) {
-              lowest = {
-                id: element.id,
-                Name: element.Name,
-                distanceBetween: element.distanceBetween,
-              };
-            } else {
-              temp = element.distanceBetween;
-              if (temp < lowest)
-                lowest = {
-                  id: element.id,
-                  Name: element.Name,
-                  distanceBetween: element.distanceBetween,
-                };
-            }
-          });
-          return lowest;
-        };
-        let intervals = cities_json.map((element) => {
-          return {
-            id: element.ID,
-            Name: element.name,
-            distanceBetween: getDistance(element.latitude, element.longitude),
-          };
-        });
-        //console.log(intervals);
-      }
-      // console.log(intervals);
-    });
-    // console.log("Nearest City", getNearestCity(intervals));
+    axios.get(URL).then((response) => console.log(response.data));
   };
 
   useEffect(() => {
@@ -210,60 +164,10 @@ export default function CarrierPage() {
     // navigator.geolocation.getCurrentPosition(geoSuccess);
   }, []);
 
-  useEffect(() => {
-    if (latitude && longitude) {
-      getDefaultCity();
-    }
-  });
-
   return (
-    // <Container maxWidth="sm" className={classes.drivePage}>
-    <Container maxWidth="sm" style={{ marginTop: "75px" }}>
+    <div className={classes.carrier_form_container}>
       <Formik
-        initialValues={{
-          date: new Date().toJSON().slice(0, 10),
-          departureTime: "",
-          timeZone: userTimeZone.shift,
-          phoneNumber: "",
-          places: 1,
-          price: "",
-          currency: rideCurrency,
-          duration: "",
-          passAParcel: false,
-          isPetsAllowed: false,
-          additionalInfo: "",
-          regularTrips: false,
-          regularTripsDays: {
-            _0monday: {
-              selected: false,
-              departureTime: "",
-            },
-            _1tuesday: {
-              selected: false,
-              departureTime: "",
-            },
-            _2wednesday: {
-              selected: false,
-              departureTime: "",
-            },
-            _3thursday: {
-              selected: false,
-              departureTime: "",
-            },
-            _4friday: {
-              selected: false,
-              departureTime: "",
-            },
-            _5saturday: {
-              selected: false,
-              departureTime: "",
-            },
-            _6sunday: {
-              selected: false,
-              departureTime: "",
-            },
-          },
-        }}
+        initialValues={initialFormState}
         onSubmit={(values) => {
           console.log("SUBMITTING");
           const departureTimeGMT = values.departureTime.split(":");
@@ -306,21 +210,19 @@ export default function CarrierPage() {
             // console.log(event.target);
             // console.log(event.target.checked);
             const weekDays = {};
-            Object.keys(props.values.regularTripsDays).map((weekDay) => {
-              return weekDays[weekDay] = {
+            Object.keys(props.values.regularTripsDays).map((weekDay) => (
+              weekDays[weekDay] = {
                 selected: event.target.checked,
                 departureTime: props.values.regularTripsDays[weekDay].departureTime,
-              };
-            });
+              }));
 
             // console.log("weekdays: ", weekDays);
             props.setFieldValue("regularTripsDays", weekDays);
           };
 
           return (
-            <form onSubmit={props.handleSubmit} className={styles.form_style}>
+            <form onSubmit={props.handleSubmit}>
               <Autocomplete
-                className={styles.height95px}
                 {...defaultProps}
                 id="from"
                 name={"from"}
@@ -337,16 +239,15 @@ export default function CarrierPage() {
                     margin="normal"
                     error={Boolean(props.errors.from) && props.touched.from}
                     helperText={
-                      Boolean(props.errors.from) &&
-                      props.touched.from &&
-                      i18n.t(`form.errors.${props.errors.from}`)
+                      Boolean(props.errors.from) && props.touched.from
+                        ? i18n.t(`form.errors.${props.errors.from}`)
+                        : " "
                     }
                   />
                 )}
                 ListboxProps={{ style: { maxHeight: "7rem" } }}
               />
               <Autocomplete
-                className={styles.height95px}
                 {...defaultProps}
                 id="to"
                 name={"to"}
@@ -362,11 +263,13 @@ export default function CarrierPage() {
                     margin="dense"
                     error={Boolean(props.errors.to) && props.touched.to}
                     helperText={
-                      Boolean(props.errors.to) && props.touched.to && i18n.t(`form.errors.${props.errors.to}`)
+                      Boolean(props.errors.to) && props.touched.to
+                        ? i18n.t(`form.errors.${props.errors.to}`)
+                        : " "
                     }
                   />
                 )}
-                // ListboxProps={{ style: { maxHeight: "7rem" } }}
+                ListboxProps={{ style: { maxHeight: "7rem" } }}
               />
               <FormControlLabel
                 control={
@@ -468,9 +371,9 @@ export default function CarrierPage() {
                         error={Boolean(props.errors.date) && props.touched.date}
                         // size={"small"}
                         helperText={
-                          Boolean(props.errors.date) &&
-                          props.touched.date &&
-                          i18n.t(`form.errors.${props.errors.date}`)
+                          Boolean(props.errors.date) && props.touched.date
+                            ? i18n.t(`form.errors.${props.errors.date}`)
+                            : " "
                         }
                         value={props.values.date}
                         onChange={props.handleChange}
@@ -495,9 +398,9 @@ export default function CarrierPage() {
                         onBlur={props.handleBlur}
                         error={Boolean(props.errors.departureTime) && props.touched.departureTime}
                         helperText={
-                          Boolean(props.errors.departureTime) &&
-                          props.touched.departureTime &&
-                          i18n.t(`form.errors.${props.errors.departureTime}`)
+                          Boolean(props.errors.departureTime) && props.touched.departureTime
+                            ? i18n.t(`form.errors.${props.errors.departureTime}`)
+                            : " "
                         }
                         value={props.values.departureTime}
                         onChange={props.handleChange}
@@ -557,41 +460,41 @@ export default function CarrierPage() {
                     {/*</Grid>*/}
                     {/*^^^ DEPARTURE TIMEZONE ^^^*/}
                   </Grid>
+                  <Grid container justifyContent="space-between">
+                    <Grid item xs={5}>
+                      <FormControl fullWidth>
+                        <InputLabel shrink id="duration-label">
+                          {i18n.t("Travel time")}
+                        </InputLabel>
+                        <Select
+                          labelId="duration-label"
+                          id="duration"
+                          name={"duration"}
+                          value={props.values.duration}
+                          renderValue={(value) => `${value}`}
+                          margin="dense"
+                          // disableUnderline
+                          onChange={props.handleChange}
+                          label="duration"
+                          //style={{paddingTop: "9px"}}
+                        >
+                          {durations.map((item) => {
+                            return (
+                              <MenuItem
+                                key={item}
+                                value={item}
+                                // onClick={() => setRideCurrency(item.code)}
+                              >
+                                {item}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                 </>
               )}
-              <Grid container justifyContent="space-between">
-                <Grid item xs={5}>
-                  <FormControl fullWidth>
-                    <InputLabel shrink id="duration-label">
-                      {i18n.t("Travel time")}
-                    </InputLabel>
-                    <Select
-                      labelId="duration-label"
-                      id="duration"
-                      name={"duration"}
-                      value={props.values.duration}
-                      renderValue={(value) => `${value}`}
-                      margin="dense"
-                      // disableUnderline
-                      onChange={props.handleChange}
-                      label="duration"
-                      //style={{paddingTop: "9px"}}
-                    >
-                      {durations.map((item) => {
-                        return (
-                          <MenuItem
-                            key={item}
-                            value={item}
-                            // onClick={() => setRideCurrency(item.code)}
-                          >
-                            {item}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
               {/* Phone number block */}
               <Grid container justifyContent="space-between" alignItems="flex-end">
                 {/* Phone */}
@@ -607,9 +510,9 @@ export default function CarrierPage() {
                     onBlur={props.handleBlur}
                     error={Boolean(props.errors.phoneNumber) && props.touched.phoneNumber}
                     helperText={
-                      Boolean(props.errors.phoneNumber) &&
-                      props.touched.phoneNumber &&
-                      i18n.t(`form.errors.${props.errors.phoneNumber}`)
+                      Boolean(props.errors.phoneNumber) && props.touched.phoneNumber
+                        ? i18n.t(`form.errors.${props.errors.phoneNumber}`)
+                        : " "
                     }
                     onChange={props.handleChange}
                   />
@@ -688,15 +591,15 @@ export default function CarrierPage() {
                     onBlur={props.handleBlur}
                     error={Boolean(props.errors.price) && props.touched.price}
                     helperText={
-                      Boolean(props.errors.price) &&
-                      props.touched.price &&
-                      i18n.t(`form.errors.${props.errors.price}`)
+                      Boolean(props.errors.price) && props.touched.price
+                        ? i18n.t(`form.errors.${props.errors.price}`)
+                        : " "
                     }
-                    // inputProps={{
-                    //   min: 0,
-                    //   type: "price",
-                    //   "aria-labelledby": "input-slider",
-                    // }}
+                    inputProps={{
+                      min: 0,
+                      type: "price",
+                      "aria-labelledby": "input-slider",
+                    }}
                   />
                 </Grid>
 
@@ -761,13 +664,13 @@ export default function CarrierPage() {
                 fullWidth
                 multiline
                 rows={2}
-                error={Boolean(props.errors.additionalInfo) && props.touched.additionalInfo}
+                error={props.errors.additionalInfo && props.touched.additionalInfo ? true : false}
                 label={i18n.t("Additional information")}
                 onChange={props.handleChange}
                 helperText={
-                  Boolean(props.errors.additionalInfo) &&
-                  props.touched.additionalInfo &&
-                  i18n.t(`form.errors.${props.errors.additionalInfo}`)
+                  props.errors.additionalInfo && props.touched.additionalInfo
+                    ? i18n.t(`form.errors.${props.errors.additionalInfo}`)
+                    : " "
                 }
               />
               <div style={{ margin: "10px" }} className={"submitBtn"}>
@@ -790,6 +693,6 @@ export default function CarrierPage() {
           );
         }}
       </Formik>
-    </Container>
+    </div>
   );
 }

@@ -1,21 +1,21 @@
 import { useEffect } from "react";
 import { Box, Container, LinearProgress, Typography } from "@material-ui/core";
 import i18next from "i18next";
-import FiltersCitiesFrom from "../../../../trip_search/lib/filterSearch/FiltersCitysFrom/FiltersCitiesFrom";
+import FiltersCitiesFrom from "@modules/trip_search/lib/filterSearch/filtersCitysFrom/FiltersCitiesFrom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getNextTransfersAction, getTransfersAction } from "@modules/trip_search/presentation/redux/actions/transfers-actions";
-import { getLoading, getTransfersData } from "../../../../../general/redux/selectors";
-import Transfer from "../Transfer/Transfer";
-import filtersClasses from "../../../../trip_search/lib/filterSearch/Filter/FilterComponent.module.css";
+import { getLoading, getTransfersData } from "../../../trip_search/presentation/redux/reducers/selectors";
+import Transfer from "@modules/transfer/presentation/transferPage/Transfer";
+import filtersClasses from "@modules/trip_search/lib/filterSearch/filter/FilterComponent.module.css";
 import classes from "./PassengerPage.module.css";
-import { useStyles } from "../../../../../general/MUI/useStyles";
-import TransferCardComponent from "../TransferCard/TransferCardComponent";
+import { useStyles } from "@general/mui/useStyles";
+import TransferCardComponent from "@modules/transfer/presentation/transferPage/transferCard/TransferCardComponent";
 import { LoadingButton } from "@mui/lab";
 import { Alert } from "@mui/material";
-import i18n from "../../../../trip_search/domain/entites/utils/language/i18n";
-import { PAGE_SIZE } from "../../../../trip_search/data/api/data-service";
-// import "./PassengerPage.css";
+import i18n from "../../../trip_search/domain/entites/utils/language/i18n";
+import { PAGE_SIZE } from "../../../trip_search/data/api/data-service";
+// import "./passengerPage.css";
 
 function isNewDesign() {
   return process.env.REACT_APP_NEW_DESIGN && process.env.REACT_APP_NEW_DESIGN === "true";
@@ -48,13 +48,13 @@ export default function PassengerPage() {
       </div>
       {/* <Divider style={{margin: "10px"}}/> */}
       {/* {loading && <h2>Loading...</h2>} */}
-      {/* {!loading && <TransfersList transfers={transfers} />} */}
+      {/* {!loading && <transfersList transfers={transfers} />} */}
       <div className={classes.transfers}>
         {loading.isLoadingTransfers ? (
           <Box sx={{ width: "100%" }}>
             <LinearProgress />
           </Box>
-        ) : // <TransfersList transfers={data.transfers} />
+        ) : // <transfersList transfers={data.transfers} />
         isNewDesign() ? (
           data.transfers.map((transfer, i) => <TransferCardComponent key={i} transfer={transfer} />)
         ) : (

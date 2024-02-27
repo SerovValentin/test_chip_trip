@@ -4,9 +4,9 @@ import {useSelector} from "react-redux";
 import {AppRouter} from "./new_achitecture/modules";
 import {ThemeProvider} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
-import {theme} from "./new_achitecture/general/MUI/useStyles";
+import {theme} from "@general/mui/useStyles";
 import {StylesProvider} from "@material-ui/core";
-import HeaderComponent from "./new_achitecture/modules/mainPage/presentation/components/HeaderComponent/HeaderComponent";
+import HeaderComponent from "@modules/mainPage/presentation/components/headerComponent/HeaderComponent";
 
 function App() {
     const {i18n} = useTranslation();

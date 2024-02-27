@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useStyles } from '../../../../../general/MUI/useStyles';
+import { useStyles } from '@general/mui/useStyles';
 import { FormControl, Select, MenuItem } from '@material-ui/core';
 import { currencies } from './currencies';
-import { getCurrency } from '../../../../../general/redux/selectors';
+import { getCurrency } from '../../../trip_search/presentation/redux/reducers/selectors';
 import { setCurrencyAction } from '@modules/trip_search/presentation/redux/actions/app-actions';
 
 const CurrenciesSelector = () => {

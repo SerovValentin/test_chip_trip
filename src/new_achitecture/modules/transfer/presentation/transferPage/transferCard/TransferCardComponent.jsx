@@ -2,9 +2,9 @@ import classes from "./TransferCardComponent.module.css";
 import i18n from "i18next";
 import { useHistory } from "react-router";
 import { useSelector } from "react-redux";
-import { currencies } from "../CurrenciesSelector/currencies";
+import { currencies } from "@modules/transfer/presentation/currenciesSelector/currencies";
 import { getCityById } from "../../../../trip_search/lib/filterSearch/cities/cities";
-import { getCurrency, getLanguage } from "@general/redux/selectors";
+import { getCurrency, getLanguage } from "@modules/trip_search/presentation/redux/reducers/selectors";
 import { Button, Divider } from "@material-ui/core";
 import { PASSENGER_ROUTE } from "@general/utils/constants/constants";
 import ArrowIcon from "@general/assets/upward-arrow.png";
@@ -28,14 +28,14 @@ export default function TransferCardComponent({ transfer, id }) {
     currencies.find((cur) => cur.code === transfer.currency) || currencies.find((cur) => cur.code === "EUR");
 
   console.log("depTime = ", transfer.departureTime);
-  console.log("transfer.timeZone = ", transfer.timeZone);
-  //const timeZoneName = timeZones.find(tz => tz.shift === transfer.timeZone)?.name
+  console.log("transferPage.timeZone = ", transfer.timeZone);
+  //const timeZoneName = timeZones.find(tz => tz.shift === transferPage.timeZone)?.name
   const timeZoneName = "GMT+" + transfer.timeZone + " " + i18n.t("timezone." + transfer.timeZone);
 
   const departureTimeSplit = transfer.departureTime.split(":");
 
   if (currencies.map((cur) => cur.code).includes(transfer.currency)) {
-    // IF transfer.currency IS IN THE currencies ARRAY
+    // IF transferPage.currency IS IN THE currencies ARRAY
 
     if (transfer.currency === globalCurrencyCode) {
       // NO NEED TO RECALCULATE IF CURRENCIES ARE EQUAL
@@ -48,7 +48,7 @@ export default function TransferCardComponent({ transfer, id }) {
         ) / 100;
     }
   } else {
-    // IF transfer.currency IS not IN THE currencies ARRAY, ASSUME IT IS EURO
+    // IF transferPage.currency IS not IN THE currencies ARRAY, ASSUME IT IS EURO
     if (globalCurrencyCode === "EUR") {
       priceNum = transfer.price;
     } else {
@@ -62,7 +62,7 @@ export default function TransferCardComponent({ transfer, id }) {
     priceToDisplay = priceNum + " " + globalCurrency.r2rSymbol;
   }
 
-  console.log("transfer.regularTripsDays: ", transfer.regularTripsDays);
+  console.log("transferPage.regularTripsDays: ", transfer.regularTripsDays);
 
   return (
     <div className={classes.transfer_card}>

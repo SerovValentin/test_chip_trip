@@ -4,7 +4,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import SearchResultView from "../../presentation/components/SearchResult/SearchResultView";
+import SearchResultView from "@modules/trip_search/presentation/components/searchResult/SearchResultView";
 
 const RoutesList = ({list, cityFrom}) => {
     const [clicked, setClicked] = useState(false);

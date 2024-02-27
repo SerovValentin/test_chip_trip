@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { Drawer, ListItem, List, ListItemText, Container, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import { menuData } from '../../../../data/menuData/menuData';
-import { useStyles } from '../../../../../../general/MUI/useStyles';
-import i18n from "../../../../../trip_search/domain/entites/utils/language/i18n";
-import { getSidebar } from '../../../../../../general/redux/selectors';
+import { menuData } from '@modules/mainPage/data/menuData/menuData';
+import { useStyles } from '@general/mui/useStyles';
+import i18n from "@modules/trip_search/domain/entites/utils/language/i18n";
+import { getSidebar } from '@modules/trip_search/presentation/redux/reducers/selectors';
 import { setSidebarAction } from '@modules/trip_search/presentation/redux/actions/app-actions';
 
 const Sidebar = () => {

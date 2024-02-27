@@ -1,9 +1,9 @@
-import classes from "../Filter/FilterComponent.module.css";
+import classes from "@modules/trip_search/lib/filterSearch/filter/FilterComponent.module.css";
 import { getCities, getCityByName } from "../cities/cities";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@material-ui/core";
-import FilterComponent from "../Filter/FilterComponent";
-import { getFilters, getInputFromToCity } from "../../../../../general/redux/selectors";
+import FilterComponent from "@modules/trip_search/lib/filterSearch/filter/FilterComponent";
+import { getFilters, getInputFromToCity } from "../../../presentation/redux/reducers/selectors";
 import { inputFromCityAction, inputToCityAction } from "@modules/trip_search/presentation/redux/actions/inputs-actions";
 import { applyFilterFromCityIdAction } from "@modules/trip_search/presentation/redux/actions/filters-actions";
 import { getTransfersAction } from "@modules/trip_search/presentation/redux/actions/transfers-actions";

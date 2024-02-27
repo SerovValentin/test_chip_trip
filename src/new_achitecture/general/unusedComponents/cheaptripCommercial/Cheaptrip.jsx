@@ -1,7 +1,7 @@
 import React from "react";
-import i18n from "../../../domain/entites/utils/language/i18n";
+import i18n from "@modules/trip_search/domain/entites/utils/language/i18n";
 import Logo_Cht from "./Logo_ChT_2.png";
-import { useStyles } from "../../../../../general/MUI/useStyles";
+import { useStyles } from "@general/mui/useStyles";
 import { Grid, Typography } from "@material-ui/core";
 
 export default function Cheaptrip() {

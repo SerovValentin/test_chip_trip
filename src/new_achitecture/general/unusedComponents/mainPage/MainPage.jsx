@@ -1,8 +1,8 @@
-import i18n from "../../../../trip_search/domain/entites/utils/language/i18n";
+import i18n from "@modules/trip_search/domain/entites/utils/language/i18n";
 import { useHistory } from "react-router-dom";
 import { Button, Grid, Container, Typography } from "@material-ui/core";
-import { useStyles } from "../../../../../general/MUI/useStyles";
-import Cheaptrip from "../../../../trip_search/presentation/components/CheaptripCommercial/Cheaptrip";
+import { useStyles } from "@general/mui/useStyles";
+import Cheaptrip from "@general/unusedComponents/cheaptripCommercial/Cheaptrip";
 
 export default function MainPage() {
   const classes = useStyles();

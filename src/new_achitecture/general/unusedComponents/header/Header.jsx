@@ -11,7 +11,7 @@
 // import { Divider } from "@material-ui/core";
 // import { useHistory } from "react-router-dom";
 // import { getCurrencies } from "../../services/api";
-// import "./Header.css";
+// import "./header.css";
 
 // const languagesList = [
 //   { locale: "en", label: "English" },
@@ -35,7 +35,7 @@
 // let topCurrencies = [];
 // let otherCurrencies = [];
 
-// export default function Header({ changeLanguage }) {
+// export default function header({ changeLanguage }) {
 //   const [currenciesList, setCurrenciesList] = React.useState([
 //     {
 //       name: "Euro",

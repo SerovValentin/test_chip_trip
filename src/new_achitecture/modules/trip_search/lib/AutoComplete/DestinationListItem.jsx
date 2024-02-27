@@ -2,8 +2,8 @@ import React from 'react';
 import style from './RoutesList.module.css'
 import {AiFillCaretDown} from "react-icons/ai";
 import {IconContext} from "react-icons";
-import SearchResultItem from "../../presentation/components/SearchResult/SearchResultItem";
-import SearchResultView from "../../presentation/components/SearchResult/SearchResultView";
+import SearchResultItem from "@modules/trip_search/presentation/components/searchResult/SearchResultItem";
+import SearchResultView from "@modules/trip_search/presentation/components/searchResult/SearchResultView";
 
 function DestinationListItem({item, onClick}) {
     return (

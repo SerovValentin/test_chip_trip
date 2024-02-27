@@ -9,9 +9,9 @@ import i18n from "../../domain/entites/utils/language/i18n";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import CloseIcon from "@mui/icons-material/Close";
 import { Button } from "@material-ui/core";
-import classes from "../../presentation/components/SearchResult/SearchComponent.module.css";
-import SearchResultView from "../../presentation/components/SearchResult/SearchResultView";
-import SearchFailResultView from "../../presentation/components/SearchResult/SearchFailResultView";
+import classes from "@modules/trip_search/presentation/components/searchResult/SearchComponent.module.css";
+import SearchResultView from "@modules/trip_search/presentation/components/searchResult/SearchResultView";
+import SearchFailResultView from "@modules/trip_search/presentation/components/searchResult/SearchFailResultView";
 
 import travelData from "../../data/jsons/cheapTripData/direct_routes.json"; //----travel_data.json
 import dataNew from "../../data/jsons/cheapTripData/locations.json";

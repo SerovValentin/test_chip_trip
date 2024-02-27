@@ -2,13 +2,13 @@ import { AppBar, IconButton, Toolbar } from "@material-ui/core";
 import { useDispatch } from "react-redux";
 import MenuIcon from "@material-ui/icons/Menu";
 import { MAIN_ROUTE } from "../../../../../general/utils/constants/constants";
-import { Sidebar, LanguageSelector } from "../../../../index";
-import CurrenciesSelector from "../../../../transfer/domain/entites/CurrenciesSelector/CurrenciesSelector";
-import { useStyles } from "../../../../../general/MUI/useStyles";
+import { Sidebar, LanguageSelector } from "@modules/index";
+import CurrenciesSelector from "@modules/transfer/presentation/currenciesSelector/CurrenciesSelector";
+import { useStyles } from "@general/mui/useStyles";
 import css from "./Navbar.module.css";
 import { setSidebarAction } from "@modules/trip_search/presentation/redux/actions/app-actions";
 import { NavLink } from "react-router-dom";
-import { getBuildMode } from "../../../data/firebase/config/build-config";
+import { getBuildMode } from "@modules/mainPage/data/firebase/config/build-config";
 // import {useTranslation} from "react-i18next";
 
 // const Navbar = ({ changeLanguage }) => {

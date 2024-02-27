@@ -4,7 +4,7 @@ import { useHistory } from 'react-router';
 import { Drawer, ListItem, List, ListItemText } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import i18n from "../../../../../trip_search/domain/entites/utils/language/i18n";
-import { getSidebar } from '../../../../../../general/redux/selectors';
+import { getSidebar } from '../../../../../trip_search/presentation/redux/reducers/selectors';
 import { setSidebarAction } from '@modules/trip_search/presentation/redux/actions/app-actions';
 import css from "./Sidebar.module.css";
 import MenuTrip from "../MenuTrip/MenuTrip";

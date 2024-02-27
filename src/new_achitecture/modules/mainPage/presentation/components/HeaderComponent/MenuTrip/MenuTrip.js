@@ -3,7 +3,7 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import css from "./MenuTrip.module.css";
-import { useStyles } from "../../../../../../general/MUI/useStyles";
+import { useStyles } from "@general/mui/useStyles";
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { setSidebarAction } from '@modules/trip_search/presentation/redux/actions/app-actions';
